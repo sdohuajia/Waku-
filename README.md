@@ -6,6 +6,11 @@
 
 http://localhost:3000/d/yns_4vFVk/nwaku-monitoring  # 将 localhost 替换为你的服务器 IP
 
+请求测试 $ETH 和获取 RPC：
+
+前往 Infura 水龙头请求 Sepolia 测试网 $ETH，需要至少 1 $ETH。
+
+建议创建一个单独的 EVM 账户并将测试网 $ETH 转入其中
 
 在 .env 文件中填写你的数据：
 
