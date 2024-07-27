@@ -1,36 +1,16 @@
 #!/bin/bash
 
-# 更新旧版本函数
-function update_old_version() {
-    echo "正在更新旧版本..."
+# 系统更新和 Docker 安装
+echo "正在更新系统..."
+sudo apt-get update
 
-    # 停止 Docker Compose 服务
-    docker-compose down
-
-    # 执行 git stash 和 git pull 操作
-    git stash push --include-untracked
-    git pull https://github.com/waku-org/nwaku-compose.git
-
-    # 删除 keystore 和 rln_tree 目录
-    rm -rf keystore rln_tree
-
-    # 从 origin/master 分支拉取最新代码
-    git pull origin master
-
-    # 编辑 .env 文件
-    nano .env  # 请修改 ETH_CLIENT_ADDRESS 为 RLN_RELAY_ETH_CLIENT_ADDRESS
-
-    # 注册节点
-    ./register_rln.sh || { echo "注册节点失败，请检查错误信息。"; exit 1; }
-
-    # 启动 Docker Compose
-    docker-compose up -d || { echo "启动 Docker Compose 失败，请检查错误信息。"; exit 1; }
-
-    echo "旧版本更新完成。"
-}
-
-# 执行更新旧版本操作（放在脚本开始处）
-update_old_version
+# 检查是否已安装 Docker
+if ! command -v docker &> /dev/null; then
+    echo "正在安装 Docker..."
+    sudo apt-get install docker.io
+else
+    echo "Docker 已安装，跳过安装步骤。"
+fi
 
 # 主菜单函数
 function main_menu() {
