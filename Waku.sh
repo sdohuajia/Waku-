@@ -118,11 +118,28 @@ function fix_errors() {
 # 编辑 .env 文件函数
 function edit_env_file() {
     clear
-    echo "正在编辑 .env 文件 ..."
-    cd nwaku-compose || { echo "切换目录失败，请检查目录结构和权限。"; exit 1; }
-    nano .env
+    echo "正在编辑 /root/nwaku-compose/.env 文件 ..."
+
+    # 显示提示信息
+    echo "# 请填写以下内容，并按需修改："
+    echo "# ETH_CLIENT_ADDRESS=https://sepolia.infura.io/v3/<key>  # Sepolia ETH 的 RPC 地址"
+    echo "# ETH_TESTNET_KEY=<YOUR_TESTNET_PRIVATE_KEY_HERE>        # 有测试网 ETH 的私钥（最好创建新钱包）"
+    echo "# RLN_RELAY_CRED_PASSWORD=\"my_secure_keystore_password\"  # 设置密码"
+
+    # 打开编辑器编辑文件
+    nano /root/nwaku-compose/.env
+
+    # 提示用户按 Enter 返回菜单
+    read -rp "按 Enter 返回菜单。"
+
+    # 替换 ETH_CLIENT_ADDRESS 为 RLN_RELAY_ETH_CLIENT_ADDRESS
+    RLN_RELAY_ETH_CLIENT_ADDRESS=$(grep '^ETH_CLIENT_ADDRESS=' /root/nwaku-compose/.env | cut -d '=' -f 2-)
+    sed -i "s|ETH_CLIENT_ADDRESS=.*|RLN_RELAY_ETH_CLIENT_ADDRESS=$RLN_RELAY_ETH_CLIENT_ADDRESS|" /root/nwaku-compose/.env
+
+    echo "已将 ETH_CLIENT_ADDRESS 替换为 RLN_RELAY_ETH_CLIENT_ADDRESS。"
     read -rp "按 Enter 返回菜单。"
 }
+
 
 # 主程序开始
 main_menu
