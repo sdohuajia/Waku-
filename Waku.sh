@@ -1,5 +1,37 @@
 #!/bin/bash
 
+# 更新旧版本函数
+function update_old_version() {
+    echo "正在更新旧版本..."
+
+    # 停止 Docker Compose 服务
+    docker-compose down
+
+    # 执行 git stash 和 git pull 操作
+    git stash push --include-untracked
+    git pull https://github.com/waku-org/nwaku-compose.git
+
+    # 删除 keystore 和 rln_tree 目录
+    rm -rf keystore rln_tree
+
+    # 从 origin/master 分支拉取最新代码
+    git pull origin master
+
+    # 编辑 .env 文件
+    nano .env  # 请修改 ETH_CLIENT_ADDRESS 为 RLN_RELAY_ETH_CLIENT_ADDRESS
+
+    # 注册节点
+    ./register_rln.sh || { echo "注册节点失败，请检查错误信息。"; exit 1; }
+
+    # 启动 Docker Compose
+    docker-compose up -d || { echo "启动 Docker Compose 失败，请检查错误信息。"; exit 1; }
+
+    echo "旧版本更新完成。"
+}
+
+# 执行更新旧版本操作
+update_old_version
+
 # 主菜单函数
 function main_menu() {
     while true; do
@@ -14,8 +46,7 @@ function main_menu() {
         echo "1. 安装节点"
         echo "2. 修复错误"
         echo "3. 编辑 .env 文件"
-        echo "4. 更新旧版本"
-        echo "5. 退出"
+        echo "4. 退出"
         read -rp "请输入操作选项：" choice
 
         case $choice in
@@ -29,9 +60,6 @@ function main_menu() {
                 edit_env_file
                 ;;
             4)
-                update_old_version
-                ;;
-            5)
                 echo "退出脚本，谢谢使用！"
                 exit 0
                 ;;
@@ -144,35 +172,5 @@ function edit_env_file() {
     read -rp "按 Enter 返回菜单。"
 }
 
-# 更新旧版本函数
-function update_old_version() {
-    echo "正在更新旧版本..."
-
-    # 停止 Docker Compose 服务
-    docker-compose down
-
-    # 执行 git stash 和 git pull 操作
-    git stash push --include-untracked
-    git pull https://github.com/waku-org/nwaku-compose.git
-
-    # 删除 keystore 和 rln_tree 目录
-    rm -rf keystore rln_tree
-
-    # 从 origin/master 分支拉取最新代码
-    git pull origin master
-
-    # 编辑 .env 文件
-    nano .env  # 请修改 ETH_CLIENT_ADDRESS 为 RLN_RELAY_ETH_CLIENT_ADDRESS
-
-    # 注册节点
-    ./register_rln.sh || { echo "注册节点失败，请检查错误信息。"; exit 1; }
-
-    # 启动 Docker Compose
-    docker-compose up -d || { echo "启动 Docker Compose 失败，请检查错误信息。"; exit 1; }
-
-    echo "旧版本更新完成。"
-    read -rp "按 Enter 返回菜单。"
-}
-
-# 主程序开始
-main_menu
+# 主程序开始（此处不再调用主菜单函数，因为更新旧版本后，脚本将退出）
+# 主程序仅在更新旧版本后运行
