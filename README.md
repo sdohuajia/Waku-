@@ -1,4 +1,4 @@
-# Waku-一键运行脚本：
+# Waku-一键运行脚本：wget https://raw.githubusercontent.com/sdohuajia/Waku-/main/Waku.sh && chmod +x Waku.sh && ./Waku.sh
 
 最低配置：2CPU / 2RAM / 40SSD
 
