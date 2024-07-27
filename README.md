@@ -1,4 +1,8 @@
-# Waku-
+# Waku-最低配置：2CPU / 2RAM / 40SSD
+
+服务器租赁：PqHosting, XorekCloud, AEZA, Hetzner, Contabo
+
+操作系统：Ubuntu 20.04
 
 可以通过浏览器在 Explorer 中检查你的注册交易。
 
