@@ -71,7 +71,7 @@ function install_node() {
     # 安装Waku
     echo "正在安装 Waku ..."
     git clone https://github.com/waku-org/nwaku-compose
-    cd nwaku-compose || exit
+    cd nwaku-compose || { echo "切换目录失败，请检查目录结构和权限。"; exit 1; }
     cp .env.example .env
 
     echo "请编辑 .env 文件并填写所需的信息："
@@ -119,7 +119,7 @@ function fix_errors() {
 function edit_env_file() {
     clear
     echo "正在编辑 .env 文件 ..."
-    cd nwaku-compose || exit
+    cd nwaku-compose || { echo "切换目录失败，请检查目录结构和权限。"; exit 1; }
     nano .env
     read -rp "按 Enter 返回菜单。"
 }
