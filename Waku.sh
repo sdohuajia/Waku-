@@ -68,15 +68,15 @@ function install_node() {
         fi
     fi
 
-    # 编辑 .env 文件
-    edit_env_file
-    
     # 安装Waku
     echo "正在安装 Waku ..."
     git clone https://github.com/waku-org/nwaku-compose
     cd nwaku-compose || { echo "切换目录失败，请检查目录结构和权限。"; exit 1; }
     cp .env.example .env
 
+    # 编辑 .env 文件
+    edit_env_file
+    
     echo "请编辑 .env 文件并填写所需的信息："
     echo "nano .env"
 
