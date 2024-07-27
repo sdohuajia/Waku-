@@ -1,22 +1,5 @@
 #!/bin/bash
 
-# 自动更新脚本
-echo "正在检查脚本更新..."
-git pull origin main
-echo "脚本已更新到最新版本。"
-
-# 系统更新和 Docker 安装
-echo "正在更新系统..."
-sudo apt-get update
-
-# 检查是否已安装 Docker
-if ! command -v docker &> /dev/null; then
-    echo "正在安装 Docker..."
-    sudo apt-get install docker.io
-else
-    echo "Docker 已安装，跳过安装步骤。"
-fi
-
 # 主菜单函数
 function main_menu() {
     while true; do
@@ -157,5 +140,5 @@ function edit_env_file() {
     read -rp "按 Enter 返回菜单。"
 }
 
-# 执行主菜单函数
+# 主程序开始
 main_menu
