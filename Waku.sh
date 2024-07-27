@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# 自动拉取最新代码库
+echo "正在检查脚本更新..."
+git pull origin main
+echo "脚本已更新到最新版本。"
+
 # 主菜单函数
 function main_menu() {
     while true; do
