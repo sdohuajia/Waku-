@@ -64,28 +64,36 @@ function install_node() {
         fi
     fi
 
-    # 安装Waku
-    echo "正在安装 Waku ..."
+    # 克隆 nwaku-compose 项目
+    echo "克隆 nwaku-compose 项目 ..."
     git clone https://github.com/waku-org/nwaku-compose
-    cd nwaku-compose || { echo "切换目录失败，请检查目录结构和权限。"; exit 1; }
+
+    # 检查克隆是否成功
+    if [ ! -d "nwaku-compose" ]; then
+        echo "克隆 nwaku-compose 项目失败，请检查错误信息。"
+        exit 1
+    fi
+
+    echo "nwaku-compose 项目克隆成功。"
+
+    # 进入 nwaku-compose 目录
+    cd nwaku-compose || {
+        echo "进入 nwaku-compose 目录失败，请检查错误信息。"
+        exit 1
+    }
+
+    echo "成功进入 nwaku-compose 目录。"
+
+    # 复制 .env.example 到 .env
     cp .env.example .env
 
-    # 提示用户输入 ETH_CLIENT_ADDRESS
-    read -rp "请输入 ETH_CLIENT_ADDRESS（如 https://sepolia.infura.io/v3/<key>）：" RLN_RELAY_ETH_CLIENT_ADDRESS
+    echo "成功复制 .env.example 到 .env 文件。"
 
-    # 提示用户输入 ETH_TESTNET_KEY
-    read -rp "请输入 ETH_TESTNET_KEY：" ETH_TESTNET_KEY
+    # 使用 nano 编辑 .env 文件
+    echo "现在开始编辑 .env 文件，请完成后按 Ctrl+X 保存并退出。"
+    nano .env
 
-    # 提示用户输入 RLN_RELAY_CRED_PASSWORD
-    read -rp "请输入 RLN_RELAY_CRED_PASSWORD：" RLN_RELAY_CRED_PASSWORD
-
-    # 将用户输入写入 .env 文件
-    echo "RLN_RELAY_ETH_CLIENT_ADDRESS=$RLN_RELAY_ETH_CLIENT_ADDRESS" >> .env
-    echo "ETH_TESTNET_KEY=$ETH_TESTNET_KEY" >> .env
-    echo "RLN_RELAY_CRED_PASSWORD=\"$RLN_RELAY_CRED_PASSWORD\"" >> .env
-
-    echo "Waku安装完成，并已注册节点并启动。"
-    read -rp "按 Enter 返回菜单。"
+    echo ".env 文件编辑完成。"
 }
 
 # 修复错误函数
@@ -104,7 +112,7 @@ function fix_errors() {
     git pull origin master
 
     # 编辑 .env 文件
-    nano .env  # 请修改 ETH_CLIENT_ADDRESS 为 RLN_RELAY_ETH_CLIENT_ADDRESS
+    nano -i .env  # 请修改 ETH_CLIENT_ADDRESS 为 RLN_RELAY_ETH_CLIENT_ADDRESS
 
     # 启动 Docker Compose
     docker-compose up -d || { echo "启动 Docker Compose 失败，请检查错误信息。"; exit 1; }
