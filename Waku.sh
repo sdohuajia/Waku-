@@ -29,7 +29,7 @@ function update_old_version() {
     echo "旧版本更新完成。"
 }
 
-# 执行更新旧版本操作
+# 执行更新旧版本操作（放在脚本开始处）
 update_old_version
 
 # 主菜单函数
