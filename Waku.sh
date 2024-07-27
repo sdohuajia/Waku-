@@ -47,47 +47,44 @@ function install_node() {
     # 安装必要的软件和工具
     sudo apt install -y curl iptables build-essential git wget jq make gcc nano tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev
 
-    # 安装Docker
-    sudo apt install -y docker.io
-
     # 检测Docker安装是否成功
-    if docker --version | grep -q "Docker version"; then
-        echo "Docker安装成功。"
-    else
-        echo "Docker安装失败，请检查安装过程中的错误信息。"
-        exit 1
+    if ! command -v docker &> /dev/null; then
+        echo "安装 Docker ..."
+        sudo apt install -y docker.io
+        if ! command -v docker &> /dev/null; then
+            echo "安装 Docker 失败，请检查错误信息。"
+            exit 1
+        fi
     fi
 
     # 检查是否需要安装Docker Compose
     if ! command -v docker-compose &> /dev/null; then
-        # 下载并安装Docker Compose
+        echo "安装 Docker Compose ..."
         sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
         sudo chmod +x /usr/local/bin/docker-compose
-
-        # 检测Docker Compose安装是否成功
-        if docker-compose --version | grep -q "docker-compose version 1.29.2"; then
-            echo "Docker Compose安装成功。"
-        else
-            echo "Docker Compose安装失败，请检查安装过程中的错误信息。"
+        if ! command -v docker-compose &> /dev/null; then
+            echo "安装 Docker Compose 失败，请检查错误信息。"
             exit 1
         fi
     fi
 
     # 安装Waku
+    echo "正在安装 Waku ..."
     git clone https://github.com/waku-org/nwaku-compose
-    cd nwaku-compose
+    cd nwaku-compose || exit
     cp .env.example .env
 
     echo "请编辑 .env 文件并填写所需的信息："
     echo "nano .env"
 
     # 注册节点
-    ./register_rln.sh
+    ./register_rln.sh || { echo "注册节点失败，请检查错误信息。"; exit 1; }
 
     # 启动 Docker Compose
-    docker-compose up -d
+    docker-compose up -d || { echo "启动 Docker Compose 失败，请检查错误信息。"; exit 1; }
 
     echo "Waku安装完成，并已注册节点并启动。"
+    read -rp "按 Enter 返回菜单。"
 }
 
 # 修复错误函数
@@ -109,17 +106,22 @@ function fix_errors() {
     nano .env  # 请修改 ETH_CLIENT_ADDRESS 为 RLN_RELAY_ETH_CLIENT_ADDRESS
 
     # 注册节点
-    ./register_rln.sh
+    ./register_rln.sh || { echo "注册节点失败，请检查错误信息。"; exit 1; }
 
     # 启动 Docker Compose
-    docker-compose up -d
+    docker-compose up -d || { echo "启动 Docker Compose 失败，请检查错误信息。"; exit 1; }
 
     echo "错误修复完成。"
+    read -rp "按 Enter 返回菜单。"
 }
 
 # 编辑 .env 文件函数
 function edit_env_file() {
-    nano nwaku-compose/.env
+    clear
+    echo "正在编辑 .env 文件 ..."
+    cd nwaku-compose || exit
+    nano .env
+    read -rp "按 Enter 返回菜单。"
 }
 
 # 主程序开始
