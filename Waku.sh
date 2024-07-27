@@ -68,6 +68,9 @@ function install_node() {
         fi
     fi
 
+    # 编辑 .env 文件
+    edit_env_file
+    
     # 安装Waku
     echo "正在安装 Waku ..."
     git clone https://github.com/waku-org/nwaku-compose
