@@ -74,14 +74,20 @@ function install_node() {
     cd nwaku-compose
     cp .env.example .env
 
-    # 替换.env文件中的内容
-    ETH_CLIENT_ADDRESS="https://sepolia.infura.io/v3/<key>"
-    ETH_TESTNET_KEY="<YOUR_TESTNET_PRIVATE_KEY_HERE>"
-    RLN_RELAY_CRED_PASSWORD="my_secure_keystore_password"
+    # 获取用户输入
+    read -rp "请输入 ETH_CLIENT_ADDRESS（Sepolia ETH 的 RPC 地址）:" ETH_CLIENT_ADDRESS
+    read -rp "请输入 ETH_TESTNET_KEY（有测试网 ETH 的私钥）:" ETH_TESTNET_KEY
+    read -rp "请输入 RLN_RELAY_CRED_PASSWORD（设置密码）:" RLN_RELAY_CRED_PASSWORD
 
+    # 替换.env文件中的内容
     sed -i "s|ETH_CLIENT_ADDRESS=.*|RLN_RELAY_ETH_CLIENT_ADDRESS=$ETH_CLIENT_ADDRESS|" .env
     sed -i "s|ETH_TESTNET_KEY=.*|ETH_TESTNET_KEY=$ETH_TESTNET_KEY|" .env
     sed -i "s|RLN_RELAY_CRED_PASSWORD=.*|RLN_RELAY_CRED_PASSWORD=$RLN_RELAY_CRED_PASSWORD|" .env
+
+    echo "已将以下内容写入 .env 文件："
+    echo "RLN_RELAY_ETH_CLIENT_ADDRESS=$ETH_CLIENT_ADDRESS"
+    echo "ETH_TESTNET_KEY=$ETH_TESTNET_KEY"
+    echo "RLN_RELAY_CRED_PASSWORD=$RLN_RELAY_CRED_PASSWORD"
 
     echo "请继续编辑.env文件（如果需要）："
     echo "nano .env"
