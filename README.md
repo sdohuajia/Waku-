@@ -1,4 +1,6 @@
-# Waku-最低配置：2CPU / 2RAM / 40SSD
+# Waku-一键运行脚本：
+
+最低配置：2CPU / 2RAM / 40SSD
 
 服务器租赁：PqHosting, XorekCloud, AEZA, Hetzner, Contabo
 
