@@ -12,7 +12,7 @@ function main_menu() {
         echo "退出脚本，请按键盘Ctrl+C退出即可"
         echo "请选择要执行的操作:"
         echo "1. 安装节点"
-        echo "2. 修复错误"
+        echo "2. 修复错误（暂不可用，官方脚本有问题）"
         echo "3. 退出"
         read -rp "请输入操作选项：" choice
 
