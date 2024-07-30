@@ -104,6 +104,18 @@ function install_node() {
     nano .env
 
     echo ".env 文件编辑完成。"
+
+    # 执行 register_rln.sh 脚本
+    echo "正在执行 register_rln.sh 脚本..."
+    ./register_rln.sh
+
+    echo "register_rln.sh 脚本执行完成。"
+
+    # 启动 Docker Compose 服务
+    echo "启动 Docker Compose 服务..."
+    docker-compose up -d || { echo "启动 Docker Compose 失败，请检查错误信息。"; exit 1; }
+
+    echo "Docker Compose 服务启动完成。"
 }
 
 # 修复错误函数
