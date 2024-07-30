@@ -27,3 +27,6 @@ ETH_TESTNET_KEY=<YOUR_TESTNET_PRIVATE_KEY_HERE>        # 有测试网 ETH 的私
 RLN_RELAY_CRED_PASSWORD="my_secure_keystore_password"  # 设置密码
 
 替换 ETH_CLIENT_ADDRESS 为 RLN_RELAY_ETH_CLIENT_ADDRESS。
+
+
+获取key网站：https://www.infura.io/faucet/sepolia
