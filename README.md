@@ -22,7 +22,7 @@ http://localhost:3000/d/yns_4vFVk/nwaku-monitoring  # 将 localhost 替换为你
 
 RLN_RELAY_ETH_CLIENT_ADDRESS=https://sepolia.infura.io/v3/<key>  # Sepolia ETH 的 RPC 地址
 
-ETH_TESTNET_KEY=<YOUR_TESTNET_PRIVATE_KEY_HERE>        # 有测试网 ETH 的私钥（最好创建新钱包）
+ETH_TESTNET_KEY=<YOUR_TESTNET_PRIVATE_KEY_HERE>        # 有测试网 ETH 的私钥（最好创建新钱包）钱包私钥不要0x开头的
 
 RLN_RELAY_CRED_PASSWORD="my_secure_keystore_password"  # 设置密码
 
