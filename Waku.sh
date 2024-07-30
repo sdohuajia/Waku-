@@ -53,38 +53,17 @@ function install_node() {
     # 安装必要的软件和工具
     sudo apt install -y curl iptables build-essential git wget jq make gcc nano tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev
 
-    # 检测Docker安装是否成功
-    if ! command -v docker &> /dev/null; then
-        echo "安装 Docker ..."
-        sudo apt install -y docker.io 
-        if ! command -v docker &> /dev/null; then
-            echo "安装 Docker 失败，请检查错误信息。"
-            exit 1
-        fi
+    # 克隆或更新 nwaku-compose 项目
+    if [ -d "nwaku-compose" ]; then
+        echo "更新 nwaku-compose 项目..."
+        cd nwaku-compose || { echo "进入 nwaku-compose 目录失败，请检查错误信息。"; exit 1; }
+        git stash push --include-untracked
+        git pull origin master
+        cd ..
+    else
+        echo "克隆 nwaku-compose 项目 ..."
+        git clone https://github.com/waku-org/nwaku-compose
     fi
-
-    # 检查是否需要安装Docker Compose
-    if ! command -v docker-compose &> /dev/null; then
-        echo "安装 Docker Compose ..."
-        sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-        sudo chmod +x /usr/local/bin/docker-compose
-        if ! command -v docker-compose &> /dev/null; then
-            echo "安装 Docker Compose 失败，请检查错误信息。"
-            exit 1
-        fi
-    fi
-
-    # 克隆 nwaku-compose 项目
-    echo "克隆 nwaku-compose 项目 ..."
-    git clone https://github.com/waku-org/nwaku-compose
-
-    # 检查克隆是否成功
-    if [ ! -d "nwaku-compose" ]; then
-        echo "克隆 nwaku-compose 项目失败，请检查错误信息。"
-        exit 1
-    fi
-
-    echo "nwaku-compose 项目克隆成功。"
 
     # 进入 nwaku-compose 目录
     cd nwaku-compose || {
@@ -123,15 +102,15 @@ function fix_errors() {
     # 停止 Docker Compose 服务
     docker-compose down
 
+    # 进入 nwaku-compose 目录
+    cd nwaku-compose || { echo "进入 nwaku-compose 目录失败，请检查错误信息。"; exit 1; }
+
     # 执行 git stash 和 git pull 操作
     git stash push --include-untracked
-    git pull https://github.com/waku-org/nwaku-compose.git
+    git pull origin master
 
     # 删除 keystore 和 rln_tree 目录
     rm -rf keystore rln_tree
-
-    # 从 origin/master 分支拉取最新代码
-    git pull origin master
 
     # 编辑 .env 文件
     nano -i .env  # 请修改 ETH_CLIENT_ADDRESS 为 RLN_RELAY_ETH_CLIENT_ADDRESS
