@@ -23,7 +23,8 @@ function main_menu() {
         echo "请选择要执行的操作:"
         echo "1. 安装节点"
         echo "2. 修复错误（暂不可用，官方脚本有问题）"
-        echo "3. 退出"
+        echo "3. 更新脚本"
+        echo "4. 退出"
         read -rp "请输入操作选项：" choice
 
         case $choice in
@@ -34,6 +35,9 @@ function main_menu() {
                 fix_errors
                 ;;
             3)
+                update_script
+                ;;
+            4)
                 echo "退出脚本，谢谢使用！"
                 exit 0
                 ;;
@@ -126,6 +130,26 @@ function fix_errors() {
     docker-compose up -d || { echo "启动 Docker Compose 失败，请检查错误信息。"; exit 1; }
 
     echo "错误修复完成。"
+    read -rp "按 Enter 返回菜单。"
+}
+
+# 更新脚本函数
+function update_script() {
+    echo "正在更新 nwaku-compose 项目..."
+    
+    # 进入 nwaku-compose 目录
+    cd nwaku-compose || { echo "进入 nwaku-compose 目录失败，请检查错误信息。"; exit 1; }
+    
+    # 停止 Docker Compose 服务
+    docker-compose down
+    
+    # 更新项目
+    git pull origin master
+    
+    # 重新启动 Docker Compose 服务
+    docker-compose up -d || { echo "启动 Docker Compose 失败，请检查错误信息。"; exit 1; }
+    
+    echo "脚本更新完成。"
     read -rp "按 Enter 返回菜单。"
 }
 
