@@ -53,6 +53,12 @@ function install_node() {
     # 安装必要的软件和工具
     sudo apt install -y curl iptables build-essential git wget jq make gcc nano tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev
 
+    # 检查是否安装了 docker-compose
+    if ! command -v docker-compose &> /dev/null; then
+        echo "docker-compose 未安装，请先安装 docker-compose。"
+        exit 1
+    fi
+
     # 克隆或更新 nwaku-compose 项目
     if [ -d "nwaku-compose" ]; then
         echo "更新 nwaku-compose 项目..."
@@ -113,7 +119,8 @@ function fix_errors() {
     rm -rf keystore rln_tree
 
     # 编辑 .env 文件
-    nano -i .env  # 请修改 ETH_CLIENT_ADDRESS 为 RLN_RELAY_ETH_CLIENT_ADDRESS
+    echo "请修改 .env 文件中的 ETH_CLIENT_ADDRESS 为 RLN_RELAY_ETH_CLIENT_ADDRESS。"
+    nano -i .env
 
     # 启动 Docker Compose
     docker-compose up -d || { echo "启动 Docker Compose 失败，请检查错误信息。"; exit 1; }
