@@ -57,10 +57,19 @@ function install_node() {
     # 安装必要的软件和工具
     sudo apt install -y curl iptables build-essential git wget jq make gcc nano tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev
 
-    # 检查是否安装了 docker-compose
+   # 检查是否安装了 docker-compose，如果未安装则安装
     if ! command -v docker-compose &> /dev/null; then
-        echo "docker-compose 未安装，请先安装 docker-compose。"
-        exit 1
+        echo "docker-compose 未安装，正在安装 docker-compose..."
+        sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        sudo chmod +x /usr/local/bin/docker-compose
+        if command -v docker-compose &> /dev/null; then
+            echo "docker-compose 安装成功。"
+        else
+            echo "docker-compose 安装失败，请检查错误。"
+            exit 1
+        fi
+    else
+        echo "docker-compose 已安装。"
     fi
 
     # 克隆或更新 nwaku-compose 项目
