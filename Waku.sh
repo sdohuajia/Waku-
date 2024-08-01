@@ -49,15 +49,21 @@ function main_menu() {
     done
 }
 
-# 安装节点函数
-function install_node() {
+# 安装节点工具的函数
+function install_node_tools() {
     # 更新软件源并升级系统软件
     sudo apt update && sudo apt upgrade -y
 
     # 安装必要的软件和工具
     sudo apt install -y curl iptables build-essential git wget jq make gcc nano tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev
+}
 
-   # 检查是否安装了 docker-compose，如果未安装则安装
+# 安装 Docker 的函数
+function install_docker() {
+    # 安装 Docker
+    sudo apt install -y docker.io
+
+    # 检查是否安装了 docker-compose，如果未安装则安装
     if ! command -v docker-compose &> /dev/null; then
         echo "docker-compose 未安装，正在安装 docker-compose..."
         sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -71,6 +77,15 @@ function install_node() {
     else
         echo "docker-compose 已安装。"
     fi
+}
+
+# 安装节点函数
+function install_node() {
+    # 安装节点工具
+    install_node_tools
+
+    # 安装 Docker
+    install_docker
 
     # 克隆或更新 nwaku-compose 项目
     if [ -d "nwaku-compose" ]; then
