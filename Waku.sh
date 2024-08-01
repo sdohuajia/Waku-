@@ -129,6 +129,7 @@ function install_node() {
     docker-compose up -d || { echo "启动 Docker Compose 失败，请检查错误信息。"; exit 1; }
 
     echo "Docker Compose 服务启动完成。"
+    read -rp "按 Enter 返回菜单。"
 }
 
 # 修复错误函数
