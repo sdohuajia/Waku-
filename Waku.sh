@@ -169,6 +169,7 @@ function install_node() {
 function view_logs() {
     echo "正在查看 nwaku 的日志..."
     # 使用 docker-compose 查看 nwaku 的日志
+    cd /root/nwaku-compose
     docker-compose logs -f nwaku
     echo "按 Ctrl+C 退出日志查看。"
 }
