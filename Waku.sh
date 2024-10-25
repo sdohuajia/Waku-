@@ -135,11 +135,17 @@ function install_node() {
 
     echo "成功复制 .env.example 到 .env 文件。"
 
-    # 使用 nano 编辑 .env 文件
-    echo "现在开始编辑 .env 文件，请完成后按 Ctrl+X 保存并退出。"
-    nano .env
+    # 获取用户输入并更新 .env 文件
+    read -rp "请输入您的 Infura 项目密钥（key）： " infura_key
+    read -rp "请输入您的测试网络私钥（<YOUR_TESTNET_PRIVATE_KEY_HERE>）： " testnet_private_key
+    read -rp "请输入您的安全密钥存储密码（my_secure_keystore_password）： " keystore_password
 
-    echo ".env 文件编辑完成。"
+    # 使用 sed 或其他方法替换 .env 文件中的占位符
+    sed -i "s|<key>|$infura_key|g" .env
+    sed -i "s|<YOUR_TESTNET_PRIVATE_KEY_HERE>|$testnet_private_key|g" .env
+    sed -i "s|my_secure_keystore_password|$keystore_password|g" .env
+
+    echo ".env 文件已更新。"
 
     # 执行 register_rln.sh 脚本
     echo "正在执行 register_rln.sh 脚本..."
