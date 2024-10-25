@@ -38,7 +38,10 @@ function main_menu() {
                 update_script
                 ;;
             4)
-                echo "退出脚本，谢谢使用！"
+                view_logs
+                ;;
+            5)
+                echo "退出脚本！"
                 exit 0
                 ;;
             *)
@@ -159,6 +162,14 @@ function install_node() {
 
     echo "Docker Compose 服务启动完成。"
     read -rp "按 Enter 返回菜单。"
+}
+
+# 查看日志函数
+function view_logs() {
+    echo "正在查看 nwaku 的日志..."
+    # 使用 docker-compose 查看 nwaku 的日志
+    docker-compose logs -f nwaku
+    echo "按 Ctrl+C 退出日志查看。"
 }
 
 # 修复错误函数
