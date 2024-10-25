@@ -137,7 +137,7 @@ function install_node() {
 
     # 获取用户输入并更新 .env 文件
     read -rp "请输入您的 Infura 项目密钥（key）： " infura_key
-    read -rp "请输入您的测试网络私钥（<YOUR_TESTNET_PRIVATE_KEY_HERE>）： " testnet_private_key
+    read -rp "请输入您的测试网络私钥-不要0x开头（<YOUR_TESTNET_PRIVATE_KEY_HERE>）： " testnet_private_key
     read -rp "请输入您的安全密钥存储密码（my_secure_keystore_password）： " keystore_password
 
     # 使用 sed 或其他方法替换 .env 文件中的占位符
