@@ -60,9 +60,31 @@ function install_node_tools() {
 
 # 安装 Docker 的函数
 function install_docker() {
-    # 安装 Docker
-    sudo apt install -y docker.io
+    # 检查 Docker 是否已安装
+    if command -v docker &> /dev/null; then
+        echo "Docker 已安装。"
+    else
+        echo "Docker 未安装，正在安装 Docker..."
+        # 安装 Docker
+        sudo apt install -y docker.io
 
+        # 检查是否安装了 docker-compose，如果未安装则安装
+        if ! command -v docker-compose &> /dev/null; then
+            echo "docker-compose 未安装，正在安装 docker-compose..."
+            sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
+            docker-compose --version  # 版本应为 docker-compose version 1.29.2
+            if command -v docker-compose &> /dev/null; then
+                echo "docker-compose 安装成功。"
+            else
+                echo "docker-compose 安装失败，请检查错误。"
+                exit 1
+            fi
+        else
+            echo "docker-compose 已安装。"
+        fi
+    fi
+    
     # 检查是否安装了 docker-compose，如果未安装则安装
     if ! command -v docker-compose &> /dev/null; then
         echo "docker-compose 未安装，正在安装 docker-compose..."
