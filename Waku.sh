@@ -24,7 +24,8 @@ function main_menu() {
         echo "1. 安装节点"
         echo "2. 修复错误（暂不可用，官方脚本有问题）"
         echo "3. 更新脚本"
-        echo "4. 退出"
+        echo "4. 查看日志"
+        echo "5. 退出"
         read -rp "请输入操作选项：" choice
 
         case $choice in
