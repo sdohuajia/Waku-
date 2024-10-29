@@ -25,7 +25,8 @@ function main_menu() {
         echo "2. 修复错误（暂不可用，官方脚本有问题）"
         echo "3. 更新脚本"
         echo "4. 查看日志"
-        echo "5. 退出"
+        echo "5. 多开（慎用，女巫）"
+        echo "6. 退出"
         read -rp "请输入操作选项：" choice
 
         case $choice in
@@ -42,6 +43,9 @@ function main_menu() {
                 view_logs
                 ;;
             5)
+                install_multiple_nodes
+                ;;    
+            6)
                 echo "退出脚本！"
                 exit 0
                 ;;
@@ -51,6 +55,72 @@ function main_menu() {
                 ;;
         esac
     done
+}
+
+# 安装多个节点函数
+function install_multiple_nodes() {
+    # 检查 nwaku-compose 目录并创建新目录
+    base_dir="$HOME/nwaku-compose"
+    new_dir="$base_dir"
+    counter=1
+
+    while [ -d "$new_dir" ]; do
+        new_dir="${base_dir}${counter}"
+        ((counter++))
+    done
+
+    echo "克隆 nwaku-compose 项目到 $new_dir ..."
+    git clone https://github.com/waku-org/nwaku-compose "$new_dir" || {
+        echo "克隆 nwaku-compose 失败，请检查错误信息。"
+        exit 1
+    }
+
+    # 进入 nwaku-compose 新建的目录
+    cd "$new_dir" || {
+        echo "进入 nwaku-compose 目录失败，请检查错误信息。"
+        exit 1
+    }
+
+    echo "成功进入 nwaku-compose 目录。"
+
+    # 复制 .env.example 到 .env
+    cp .env.example .env
+    echo "成功复制 .env.example 到 .env 文件。"
+
+    # 获取用户输入并更新 .env 文件
+    read -rp "请输入您的 Infura 项目密钥（key）： " infura_key
+    read -rp "请输入您的测试网络私钥-不要0x开头（<YOUR_TESTNET_PRIVATE_KEY_HERE>）： " testnet_private_key
+    read -rp "请输入您的安全密钥存储密码（my_secure_keystore_password）： " keystore_password
+
+    # 使用 sed 替换 .env 文件中的占位符
+    sed -i "s|<key>|$infura_key|g" .env
+    sed -i "s|<YOUR_TESTNET_PRIVATE_KEY_HERE>|$testnet_private_key|g" .env
+    sed -i "s|my_secure_keystore_password|$keystore_password|g" .env
+
+    echo ".env 文件已更新。"
+
+    # 获取用户输入的端口
+    read -rp "请输入第一个端口： " port1
+    read -rp "请输入第二个端口： " port2
+
+    # 更新 docker-compose.yml 中的端口
+    sed -i "s|^\s*- [0-9]*:|  - $port1:|g" docker-compose.yml
+    sed -i "s|^\s*- [0-9]*:|  - $port2:|g" docker-compose.yml
+
+    echo "docker-compose.yml 中的端口已更新。"
+
+    # 执行 register_rln.sh 脚本
+    echo "正在执行 register_rln.sh 脚本..."
+    ./register_rln.sh
+
+    echo "register_rln.sh 脚本执行完成。"
+
+    # 启动 Docker Compose 服务
+    echo "启动 Docker Compose 服务..."
+    docker-compose up -d || { echo "启动 Docker Compose 失败，请检查错误信息。"; exit 1; }
+
+    echo "Docker Compose 服务启动完成。"
+    read -rp "按 Enter 返回菜单。"
 }
 
 # 安装节点工具的函数
